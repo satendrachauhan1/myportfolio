@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Satendra Chauhan | Developer Portfolio Dashboard</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #06b6d4;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .glass-card-hover:hover {
+        transform: translateY(-3px);
+        border-color: rgba(6, 182, 212, 0.4);
+        box-shadow: 0 12px 30px -10px rgba(6, 182, 212, 0.2);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen flex selection:bg-cyan-500 selection:text-black pb-20 lg:pb-0">
+
+  <!-- Ambient Background Gradients -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-80 md:w-96 h-80 md:h-96 bg-cyan-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-32 w-80 md:w-96 h-80 md:h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/4 w-80 md:w-96 h-80 md:h-96 bg-emerald-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Mobile Blur Overlay -->
+  <div id="mobileOverlay" class="fixed inset-0 bg-black/70 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+  <aside id="sidebar" class="fixed top-0 bottom-0 left-0 w-72 bg-slate-900/95 backdrop-blur-2xl border-r border-slate-800/80 z-50 flex flex-col justify-between transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
+    <div class="p-5 md:p-6 overflow-y-auto">
+      
+      <!-- Top Profile Branding -->
+      <div class="flex items-center justify-between pb-5 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <!-- Profile Thumbnail (Fallback to SC) -->
+          <div class="w-11 h-11 rounded-xl ring-2 ring-cyan-500/30 overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-bold text-white shrink-0">
+            <img src="profile.jpg" alt="Satendra Chauhan" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <span style="display:none;" class="w-full h-full items-center justify-center font-bold text-sm">SC</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-sm tracking-wide text-white">Satendra Chauhan</h2>
+            <p class="text-[11px] font-mono text-cyan-400">CS Undergrad & Dev</p>
+          </div>
+        </div>
+        <!-- Close button for mobile screen -->
+        <button onclick="toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white bg-slate-800/50">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Quick Location Badge -->
+      <div class="mt-4 px-3 py-2 rounded-lg bg-slate-950/70 border border-slate-800/90 text-xs text-slate-400 space-y-1">
+        <div class="flex items-center gap-1.5 text-[11px]"><i data-lucide="map-pin" class="w-3 h-3 text-cyan-400 shrink-0"></i> Birgunj, Nepal / Bengaluru</div>
+        <div class="flex items-center gap-1.5 text-[11px]"><i data-lucide="graduation-cap" class="w-3 h-3 text-indigo-400 shrink-0"></i> Atria Institute (2024–28)</div>
+      </div>
+
+      <!-- Nav Items -->
+      <nav class="mt-5 space-y-1">
+        <button onclick="navigateTo('overview')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-cyan-400 bg-cyan-500/10 border border-cyan-500/20" data-view="overview">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview & Metrics
+        </button>
+        <button onclick="navigateTo('projects')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-800/60" data-view="projects">
+          <i data-lucide="folder-git-2" class="w-4 h-4"></i> Featured Projects
+        </button>
+        <button onclick="navigateTo('hackathons')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-800/60" data-view="hackathons">
+          <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i> Hackathons & Sprints
+        </button>
+        <button onclick="navigateTo('skills')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-800/60" data-view="skills">
+          <i data-lucide="cpu" class="w-4 h-4"></i> Technical Arsenal
+        </button>
+        <button onclick="navigateTo('credentials')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-800/60" data-view="credentials">
+          <i data-lucide="award" class="w-4 h-4"></i> Credentials & Edu
+        </button>
+        <button onclick="navigateTo('contact')" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-medium transition text-slate-400 hover:text-slate-100 hover:bg-slate-800/60" data-view="contact">
+          <i data-lucide="send" class="w-4 h-4"></i> Contact & Profiles
+        </button>
+      </nav>
+    </div>
+
+    <!-- Quick Footer Socials -->
+    <div class="p-5 border-t border-slate-800 space-y-2">
+      <div class="flex items-center justify-around text-slate-400">
+        <a href="mailto:chauhansatendra270@gmail.com" class="p-2 hover:text-cyan-400 transition" title="Email"><i data-lucide="mail" class="w-4 h-4"></i></a>
+        <a href="https://github.com" target="_blank" class="p-2 hover:text-cyan-400 transition" title="GitHub"><i data-lucide="github" class="w-4 h-4"></i></a>
+        <a href="https://linkedin.com" target="_blank" class="p-2 hover:text-cyan-400 transition" title="LinkedIn"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+        <a href="https://leetcode.com" target="_blank" class="p-2 hover:text-cyan-400 transition" title="LeetCode"><i data-lucide="code" class="w-4 h-4"></i></a>
+      </div>
+      <div class="text-[10px] font-mono text-center text-slate-500">Active CSE Candidate (2024–28)</div>
+    </div>
+  </aside>
+
+  <!-- Main Content Stage -->
+  <main class="flex-1 lg:pl-72 relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
+    
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-slate-950/80 border-b border-slate-800/80 px-4 md:px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white" aria-label="Open menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Open for Roles
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="mailto:chauhansatendra270@gmail.com" class="text-xs font-mono px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition flex items-center gap-1.5 shadow-sm shadow-cyan-500/20">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Connect</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main View Containers -->
+    <div class="p-4 sm:p-6 md:p-8 space-y-6 md:space-y-8 flex-1 max-w-7xl mx-auto w-full">
+
+      <!-- ================= VIEW 1: OVERVIEW ================= -->
+      <section id="view-overview" class="view-panel space-y-6 md:space-y-8">
+        
+        <!-- Hero Header Card (Responsive Spot 2) -->
+        <div class="glass-card rounded-2xl p-5 sm:p-7 md:p-8 relative overflow-hidden flex flex-col-reverse md:flex-row items-center justify-between gap-6">
+          <div class="relative z-10 max-w-2xl space-y-3.5 text-center md:text-left">   
+            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span class="px-2.5 py-1 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[11px] font-mono">
+                B.E. Computer Science @ Atria
+              </span>
+              <span class="px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[11px] font-mono flex items-center gap-1">
+                <i data-lucide="award" class="w-3 h-3"></i> Cypher 4.0 Hackathon
+              </span>
+            </div>
+            
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+              Engineering <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 bg-clip-text text-transparent">Intelligent Systems</span>, Robotics & Software.
+            </h1>
+            
+            <p class="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+              Hi, I’m <strong>Satendra Chauhan</strong>, a 3rd-year Computer Science student passionate about system design and automation. Experienced in building IoT-driven telemetry networks, autonomous obstacle-navigating robots, and scalable full-stack applications.
+            </p>
+            
+            <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+              <button onclick="navigateTo('projects')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                Explore Projects <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+              <button onclick="navigateTo('hackathons')" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-white font-medium text-xs sm:text-sm border border-slate-700 transition flex items-center justify-center gap-2">
+                Cypher 4.0 Hackathon <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Portrait Frame -->
+          <div class="relative shrink-0 mt-2 md:mt-0">
+            <div class="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl p-1 bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-400 shadow-xl shadow-cyan-500/20 group">
+              <img 
+                src="profile.jpg" 
+                alt="Satendra Chauhan" 
+                class="w-full h-full rounded-[14px] object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <!-- Initials Fallback -->
+              <div style="display:none;" class="w-full h-full rounded-[14px] bg-slate-900 items-center justify-center font-extrabold text-3xl text-cyan-400">
+                SC
+              </div>
+            </div>
+            <!-- Online Indicator -->
+            <span class="absolute bottom-2 right-2 w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-emerald-500 border-2 border-slate-950" title="Available"></span>
+          </div>
+        </div>
+
+        <!-- Metric Counters (2 Cols on Mobile, 4 on Desktop) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div class="glass-card glass-card-hover rounded-xl p-4 sm:p-5 border-l-4 border-l-cyan-500">
+            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">LeetCode Benchmark</p>
+            <div class="flex items-baseline gap-1.5 mt-1 sm:mt-2">
+              <span class="text-2xl sm:text-3xl font-extrabold text-white">100+</span>
+              <span class="text-[11px] text-cyan-400">Solved</span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">DSA, Logic, Arrays</p>
+          </div>
+
+          <div class="glass-card glass-card-hover rounded-xl p-4 sm:p-5 border-l-4 border-l-indigo-500">
+            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Engineering CGPA</p>
+            <div class="flex items-baseline gap-1.5 mt-1 sm:mt-2">
+              <span class="text-2xl sm:text-3xl font-extrabold text-white">7.55</span>
+              <span class="text-[11px] text-indigo-400">/ 10</span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">4th Sem @ Atria</p>
+          </div>
+
+          <div class="glass-card glass-card-hover rounded-xl p-4 sm:p-5 border-l-4 border-l-amber-500">
+            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Hackathons</p>
+            <div class="flex items-baseline gap-1.5 mt-1 sm:mt-2">
+              <span class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white">Cypher</span>
+              <span class="text-[11px] text-amber-400">4.0</span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-amber-400 mt-0.5 truncate">The Spare Parts</p>
+          </div>
+
+          <div class="glass-card glass-card-hover rounded-xl p-4 sm:p-5 border-l-4 border-l-emerald-500">
+            <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Projects Built</p>
+            <div class="flex items-baseline gap-1.5 mt-1 sm:mt-2">
+              <span class="text-2xl sm:text-3xl font-extrabold text-white">5</span>
+              <span class="text-[11px] text-emerald-400">Active</span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 truncate">IoT, AI, Robotics</p>
+          </div>
+        </div>
+
+        <!-- Terminal + Focus Highlights -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+          
+          <!-- Terminal Widget -->
+          <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-[300px] sm:h-[340px] border border-slate-800">
+            <div class="bg-slate-900 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400">satendra@portfolio-cli</span>
+              <span class="text-[10px] text-slate-500 font-mono">zsh</span>
+            </div>
+            <div id="terminalOutput" class="p-3.5 font-mono text-[11px] sm:text-xs overflow-y-auto flex-1 space-y-1.5 text-slate-300">
+              <p class="text-slate-500">// Satendra Chauhan CLI Terminal.</p>
+              <p class="text-slate-500">// Type <span class="text-cyan-400 font-bold">help</span>, <span class="text-amber-400 font-bold">hackathon</span>, or <span class="text-cyan-400 font-bold">projects</span>.</p>
+            </div>
+            <form onsubmit="handleTerminalCommand(event)" class="p-2.5 bg-slate-900/70 border-t border-slate-800 flex items-center gap-2">
+              <span class="text-cyan-400 font-mono text-xs">➜</span>
+              <input id="termInput" type="text" placeholder="Type a command..." class="w-full bg-transparent text-xs font-mono text-cyan-300 focus:outline-none" />
+            </form>
+          </div>
+
+          <!-- Highlight Cards -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i> Core Focus Areas
+                </h3>
+                <span class="text-[10px] font-mono text-cyan-400 uppercase tracking-wider">Current</span>
+              </div>
+              <div class="space-y-2.5">
+                <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-white">Smart Warehouse Inventory Allocator</span>
+                    <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400">AI / BFS</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-1">Autonomous grid slotting, utility agents, and CustomTkinter desktop interface.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-white">Cypher 4.0 Hackathon Sprint</span>
+                    <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400">Oct 2026</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-1">Rapid prototyping solving "The Spare Parts" logistics problem statement.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div class="text-xs font-semibold text-white">Autonomous Robotics & IoT Monitoring</div>
+                  <p class="text-[11px] text-slate-400 mt-1">Extinguisher robot and LoRa smart parking telemetry with live sensor feedback.</p>
+                </div>
+              </div>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Location: Birgunj / Bengaluru</span>
+              <button onclick="navigateTo('hackathons')" class="text-cyan-400 hover:underline">Cypher Details →</button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ================= VIEW: HACKATHONS & SPRINTS ================= -->
+      <section id="view-hackathons" class="view-panel space-y-6 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <i data-lucide="flame" class="w-5 h-5 text-amber-400"></i> Hackathons & Coding Sprints
+          </h2>
+          <p class="text-slate-400 text-xs sm:text-sm">Competitive engineering events, rapid architecture prototyping, and team sprints.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+          
+          <div class="lg:col-span-2 glass-card rounded-2xl p-5 sm:p-7 space-y-5 border-l-4 border-l-amber-500">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-800">
+              <div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/30">Official Participation</span>
+                <h3 class="text-lg sm:text-xl font-bold text-white mt-1">Cypher 4.0 Hackathon</h3>
+                <p class="text-[11px] text-slate-400 font-mono">Rotaract Club of Atria Institute of Technology</p>
+              </div>
+              <div class="sm:text-right">
+                <span class="text-xs font-mono text-slate-300">October 9th – 10th, 2026</span>
+                <p class="text-[11px] text-cyan-400 font-mono">Bengaluru, India</p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <div>
+                <h4 class="text-[11px] font-mono uppercase tracking-wider text-slate-400">Problem Statement Tackled</h4>
+                <div class="text-base font-bold text-cyan-300 mt-0.5 flex items-center gap-1.5">
+                  <i data-lucide="wrench" class="w-4 h-4 text-cyan-400"></i> The Spare Parts
+                </div>
+                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                  Competed in the offline sprint tackling spare parts logistics, tracking pipelines, and operational bottleneck mitigations under tight sprint timelines.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div class="text-xs font-bold text-white">Sprint Pressure Testing</div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Iterated through logic schemas, algorithms, and prototype validation in an intensive environment.</p>
+                </div>
+                <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <div class="text-xs font-bold text-white">System Architecture</div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Coordinated system components and built real-time workflows under strict judge reviews.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[11px] font-mono text-slate-300">Atria I.T.</span>
+              <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[11px] font-mono text-slate-300">Rotaract Dist 3191</span>
+              <span class="px-2 py-0.5 bg-slate-900 border border-slate-800 rounded text-[11px] font-mono text-slate-300">The Spare Parts</span>
+            </div>
+          </div>
+
+          <!-- Certificate Verified Card -->
+          <div class="glass-card rounded-2xl p-5 space-y-4 border border-slate-800">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Certificate Verified
+              </h4>
+              <span class="text-[10px] font-mono text-slate-400">CYPHER-4.0</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/90 border border-dashed border-slate-700 text-center space-y-2">
+              <i data-lucide="file-check-2" class="w-8 h-8 text-amber-400 mx-auto"></i>
+              <div class="text-xs font-bold text-white">Certificate of Participation</div>
+              <p class="text-[11px] text-slate-400">Awarded to <strong>Satendra Chauhan</strong> on October 10th, 2026 for Cypher 4.0.</p>
+            </div>
+            <ul class="space-y-1 text-[11px] text-slate-400 font-mono">
+              <li>• Convenor: Dr. Devi Kannan</li>
+              <li>• Principal: Dr. Rajesha S</li>
+              <li>• Faculty Coord: Prof. Keerthi K S</li>
+            </ul>
+            <a href="mailto:chauhansatendra270@gmail.com?subject=Cypher%20Hackathon%20Inquiry" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono text-center text-cyan-400 block transition">
+              Discuss Hackathon Project
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ================= VIEW 2: PROJECTS ================= -->
+      <section id="view-projects" class="view-panel space-y-6 hidden">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white">Featured Projects</h2>
+            <p class="text-slate-400 text-xs sm:text-sm">Hardware-integrated platforms, automated dispatchers, and desktop suites.</p>
+          </div>
+          <!-- Filter Buttons (Horizontal scrolling for mobile) -->
+          <div class="flex gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <button onclick="filterProjects('all')" class="proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shrink-0" data-filter="all">All</button>
+            <button onclick="filterProjects('ai')" class="proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-800 shrink-0" data-filter="ai">AI / Agents</button>
+            <button onclick="filterProjects('iot')" class="proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-800 shrink-0" data-filter="iot">IoT & Robotics</button>
+            <button onclick="filterProjects('software')" class="proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-800 shrink-0" data-filter="software">Software</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+
+          <!-- Project: Smart Warehouse Inventory Allocator (Featured Card) -->
+          <div class="proj-card glass-card glass-card-hover rounded-2xl p-5 sm:p-6 flex flex-col justify-between border-t-2 border-t-cyan-400 md:col-span-2" data-category="ai">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span> Active Engineering Project
+                </span>
+                <span class="text-[11px] text-cyan-300 font-mono">Python Heuristics</span>
+              </div>
+              <h3 class="text-lg sm:text-xl font-bold text-white mt-2.5">Smart Warehouse Inventory Allocator</h3>
+              <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                Autonomous storage allocation platform designed to optimize warehouse dispatch speed and reduce retrieval latency using graph search algorithms and utility agent decisions.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3 text-xs text-slate-300">
+                <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <strong class="text-white block mb-0.5 text-xs">State-Space Pathfinding</strong>
+                  <span class="text-[11px] text-slate-400">Breadth-First Search (BFS) corridor mapping for collision-free picker movement.</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800">
+                  <strong class="text-white block mb-0.5 text-xs">Utility Agent Logic</strong>
+                  <span class="text-[11px] text-slate-400">Scores product velocities and dynamically groups items near output docks.</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="flex flex-wrap gap-1.5 self-start sm:self-auto">
+                <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-mono text-cyan-300">CustomTkinter</span>
+                <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-mono text-cyan-300">BFS Search</span>
+                <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-mono text-cyan-300">Python</span>
+              </div>
+              <button onclick="showProjectDetails('Smart Warehouse Inventory Allocator', 'Features automated grid navigation, bay utilization graphs, and collision-free agent dispatching built inside a CustomTkinter desktop interface.')" class="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs font-medium border border-cyan-500/30 transition flex items-center justify-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> Inspect Architecture
+              </button>
+            </div>
+          </div>
+
+          <!-- Project: Smart Parking System -->
+          <div class="proj-card glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between" data-category="iot">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">IoT</span>
+                <span class="text-[11px] text-slate-400 font-mono">Completed</span>
+              </div>
+              <h3 class="text-base font-bold text-white mt-2">Smart Parking System</h3>
+              <p class="text-xs text-slate-400 mt-1">End-to-end IoT parking space monitor utilizing LoRa/Wi-Fi to stream vacancy updates to digital management dashboards in real time.</p>
+              <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> Centralized occupancy management.</li>
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> Reduces urban congestion bottlenecks.</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <button onclick="showProjectDetails('Smart Parking System', 'Connected parking sensors with centralized telemetry. Enabled real-time driver views on digital dashboards.')" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition flex items-center justify-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> Details
+              </button>
+            </div>
+          </div>
+
+          <!-- Project: Smart Firefighting Extinguisher Robot -->
+          <div class="proj-card glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between" data-category="iot">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-500/10 text-rose-400 border border-rose-500/20">Robotics</span>
+                <span class="text-[11px] text-slate-400 font-mono">Completed</span>
+              </div>
+              <h3 class="text-base font-bold text-white mt-2">Firefighting Extinguisher Robot</h3>
+              <p class="text-xs text-slate-400 mt-1">Autonomous robot equipped with IR, PIR, temperature, and smoke sensor telemetry for immediate fire hazard containment.</p>
+              <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> Automated water suppressant pump.</li>
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-rose-400 mt-0.5 shrink-0"></i> Obstacle avoidance & buzzer notifications.</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <button onclick="showProjectDetails('Smart Firefighting Extinguisher Robot', 'Custom micro-actuator control logic for automated suppression and hazardous environment navigation.')" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition flex items-center justify-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> Details
+              </button>
+            </div>
+          </div>
+
+          <!-- Project: Smart Digital Clock -->
+          <div class="proj-card glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between" data-category="software">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Desktop Tool</span>
+                <span class="text-[11px] text-slate-400 font-mono">Completed</span>
+              </div>
+              <h3 class="text-base font-bold text-white mt-2">Smart Digital Clock & Assistant</h3>
+              <p class="text-xs text-slate-400 mt-1">Desktop utility integrating OpenWeatherMap API, Pygame audio controls, and hands-free voice assistance.</p>
+              <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> Hands-free voice assistant integration.</li>
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400 mt-0.5 shrink-0"></i> Live weather telemetry with alarm triggers.</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <button onclick="showProjectDetails('Smart Digital Clock', 'Multi-threaded background task processing to prevent UI freezing during weather API calls.')" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition flex items-center justify-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> Details
+              </button>
+            </div>
+          </div>
+
+          <!-- Project: Student Record Security App -->
+          <div class="proj-card glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between" data-category="software">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">Security</span>
+                <span class="text-[10px] text-amber-400 font-mono animate-pulse">● In Progress</span>
+              </div>
+              <h3 class="text-base font-bold text-white mt-2">Student Record Data Security App</h3>
+              <p class="text-xs text-slate-400 mt-1">Secured management architecture for academic records emphasizing cryptographic integrity, access control, and robust storage.</p>
+              <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> Role-based authentication (RBAC).</li>
+                <li class="flex items-start gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0"></i> Tamper-resistant storage schemas.</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <button onclick="showProjectDetails('Student Record Data Security App', 'Secure authentication protocols and SQL injection protection for institutional grade recording.')" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition flex items-center justify-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i> Details
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ================= VIEW 3: SKILLS ================= -->
+      <section id="view-skills" class="view-panel space-y-6 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Technical Arsenal</h2>
+          <p class="text-slate-400 text-xs sm:text-sm">Languages, frameworks, database systems, and core computer science foundations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div class="lg:col-span-2 space-y-3.5">
+            
+            <div class="glass-card rounded-2xl p-4 sm:p-5">
+              <div class="flex items-center gap-2 mb-2.5 text-cyan-400 font-semibold text-xs sm:text-sm">
+                <i data-lucide="code-2" class="w-4 h-4"></i> Programming Languages
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Java</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">C</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">C++</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-cyan-300 font-mono">Python (Intermediate)</span>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5">
+              <div class="flex items-center gap-2 mb-2.5 text-indigo-400 font-semibold text-xs sm:text-sm">
+                <i data-lucide="globe" class="w-4 h-4"></i> Full-Stack & Web Technologies
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">React.js</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Node.js</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Express.js</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Spring Boot</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">REST APIs</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 font-mono">HTML / CSS / JS</span>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5">
+              <div class="flex items-center gap-2 mb-2.5 text-emerald-400 font-semibold text-xs sm:text-sm">
+                <i data-lucide="database" class="w-4 h-4"></i> Databases & Cloud
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">MySQL</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">MongoDB</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">AWS</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Git & GitHub</span>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5">
+              <div class="flex items-center gap-2 mb-2.5 text-purple-400 font-semibold text-xs sm:text-sm">
+                <i data-lucide="binary" class="w-4 h-4"></i> CS Core & AI Search
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Data Structures</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">OOP</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">BFS Search</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Operating Systems</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">Pandas</span>
+                <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white font-mono">NumPy</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Radar Chart Card -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col items-center justify-between">
+            <div class="w-full text-center pb-2 border-b border-slate-800">
+              <h3 class="font-bold text-xs sm:text-sm text-white">Competency Profile</h3>
+              <p class="text-[11px] text-slate-400">Relative distribution across domains</p>
+            </div>
+            <div class="relative w-full aspect-square max-w-[260px] my-auto">
+              <canvas id="skillsRadarChart"></canvas>
+            </div>
+            <div class="w-full text-center text-[10px] font-mono text-cyan-400 pt-2 border-t border-slate-800">
+              LeetCode 100+ Solved
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= VIEW 4: CREDENTIALS & EDUCATION ================= -->
+      <section id="view-credentials" class="view-panel space-y-6 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Education & Certifications</h2>
+          <p class="text-slate-400 text-xs sm:text-sm">Academic record, verified industry courses, and simulations.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          <!-- Education Timeline -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-5">
+            <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="graduation-cap" class="w-4 h-4 text-cyan-400"></i> Academic Trajectory
+            </h3>
+            
+            <div class="border-l-2 border-slate-800 pl-4 space-y-5 ml-1">
+              <div class="relative">
+                <span class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-cyan-400 border-2 border-slate-950"></span>
+                <span class="text-[11px] font-mono text-cyan-400">2024 – 2028 (Ongoing)</span>
+                <h4 class="text-xs sm:text-sm font-bold text-white mt-0.5">B.E. in Computer Science and Engineering</h4>
+                <p class="text-xs text-slate-300">Atria Institute of Technology, Bengaluru (India)</p>
+                <div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-300">
+                  <span>CGPA:</span> <strong class="text-cyan-400">7.55 / 10</strong> (4th SEM)
+                </div>
+              </div>
+
+              <div class="relative">
+                <span class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-slate-600 border-2 border-slate-950"></span>
+                <span class="text-[11px] font-mono text-slate-400">2021 – 2023</span>
+                <h4 class="text-xs sm:text-sm font-bold text-white mt-0.5">Higher Secondary (+2) in Science</h4>
+                <p class="text-xs text-slate-300">Om National Academy, Birgunj (Nepal)</p>
+                <div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-300">
+                  <span>GPA:</span> <strong class="text-white">2.96 / 4.0</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verified Certifications -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-4">
+            <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="award" class="w-4 h-4 text-indigo-400"></i> Verified Certifications & Sprints
+            </h3>
+
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-xl bg-slate-900/70 border border-amber-500/30 flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-xs font-bold text-amber-300">Cypher 4.0 Hackathon Participation</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Rotaract Club of Atria I.T. • "The Spare Parts"</p>
+                  <span class="inline-block mt-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-mono">Oct 9–10, 2026</span>
+                </div>
+                <span class="text-[11px] font-mono text-amber-400 shrink-0">2026</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-xs font-bold text-white">Full Stack Internship: Laptop Brand Showcase</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Rotary Club of Atria Institute of Technology</p>
+                  <span class="inline-block mt-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-mono">Score: 8.42 / 10</span>
+                </div>
+                <span class="text-[11px] font-mono text-slate-400 shrink-0">2026</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-xs font-bold text-white">Web Development Fundamentals</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">IBM SkillsBuild</p>
+                </div>
+                <span class="text-[11px] font-mono text-slate-400 shrink-0">2026</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-xs font-bold text-white">Data Analytics Job Simulation</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Deloitte</p>
+                </div>
+                <span class="text-[11px] font-mono text-slate-400 shrink-0">2026</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- ================= VIEW 5: CONTACT & PROFILES ================= -->
+      <section id="view-contact" class="view-panel space-y-6 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Get in Touch</h2>
+          <p class="text-slate-400 text-xs sm:text-sm">Reach out directly for project collaborations, software engineering roles, or internships.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <!-- Direct Coordinates -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-5">
+            <h3 class="text-sm font-bold text-white">Direct Coordinates</h3>
+            
+            <div class="space-y-3">
+              <a href="mailto:chauhansatendra270@gmail.com" class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-cyan-500/50 transition">
+                <div class="w-9 h-9 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400 shrink-0">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                </div>
+                <div class="overflow-hidden">
+                  <div class="text-[10px] text-slate-400 font-mono">Email Directly</div>
+                  <div class="text-xs sm:text-sm font-semibold text-white truncate">chauhansatendra270@gmail.com</div>
+                </div>
+              </a>
+
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                <div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 shrink-0">
+                  <i data-lucide="phone" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 font-mono">Phone / WhatsApp</div>
+                  <div class="text-xs sm:text-sm font-semibold text-white">+91 9334658481</div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/70 border border-slate-800">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                  <i data-lucide="map-pin" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-[10px] text-slate-400 font-mono">Locations</div>
+                  <div class="text-xs sm:text-sm font-semibold text-white">Birgunj, Nepal / Bengaluru</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profiles Grid -->
+            <div>
+              <div class="text-[11px] font-mono text-slate-400 mb-2">Coding Profiles & Networks</div>
+              <div class="grid grid-cols-3 gap-2">
+                <a href="https://github.com" target="_blank" class="p-2.5 text-center rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-600 transition">
+                  <i data-lucide="github" class="w-4 h-4 mx-auto text-white"></i>
+                  <span class="text-[10px] font-mono text-slate-300 block mt-1">GitHub</span>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="p-2.5 text-center rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-600 transition">
+                  <i data-lucide="linkedin" class="w-4 h-4 mx-auto text-blue-400"></i>
+                  <span class="text-[10px] font-mono text-slate-300 block mt-1">LinkedIn</span>
+                </a>
+                <a href="https://leetcode.com" target="_blank" class="p-2.5 text-center rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-600 transition">
+                  <i data-lucide="code" class="w-4 h-4 mx-auto text-amber-400"></i>
+                  <span class="text-[10px] font-mono text-slate-300 block mt-1">LeetCode</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Message Form -->
+          <div class="glass-card rounded-2xl p-5 sm:p-6 flex flex-col justify-between">
+            <form onsubmit="handleContactSubmit(event)" class="space-y-3">
+              <h3 class="text-sm font-bold text-white">Send Direct Message</h3>
+              <div>
+                <label class="text-[10px] text-slate-400 font-mono">Your Name / Organization</label>
+                <input required type="text" placeholder="e.g. Recruiter / Tech Lead" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 focus:outline-none focus:border-cyan-400 text-xs text-white" />
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 font-mono">Your Email</label>
+                <input required type="email" placeholder="name@company.com" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 focus:outline-none focus:border-cyan-400 text-xs text-white" />
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 font-mono">Message</label>
+                <textarea required rows="3" placeholder="Let's connect regarding an opportunity..." class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 focus:outline-none focus:border-cyan-400 text-xs text-white resize-none"></textarea>
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold text-slate-950 text-xs transition shadow-md shadow-cyan-500/20">
+                Send Notification
+              </button>
+            </form>
+            <div id="contactFeedback" class="hidden mt-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] text-center">
+              Message logged! You can also email directly at chauhansatendra270@gmail.com.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Desktop Footer -->
+    <footer class="p-5 border-t border-slate-900 text-center text-[11px] font-mono text-slate-500 hidden lg:block">
+      Satendra Chauhan • Atria Institute of Technology CSE (2024-2028)
+    </footer>
+
+  </main>
+
+  <!-- Mobile Bottom Quick Navigation Bar -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-slate-950/90 backdrop-blur-xl border-t border-slate-800 px-3 py-2 flex items-center justify-around">
+    <button onclick="navigateTo('overview')" class="mobile-nav-btn flex flex-col items-center gap-1 text-cyan-400" data-view="overview">
+      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+      <span class="text-[10px] font-medium">Home</span>
+    </button>
+    <button onclick="navigateTo('projects')" class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-view="projects">
+      <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+      <span class="text-[10px] font-medium">Projects</span>
+    </button>
+    <button onclick="navigateTo('hackathons')" class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-view="hackathons">
+      <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+      <span class="text-[10px] font-medium">Sprint</span>
+    </button>
+    <button onclick="navigateTo('skills')" class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-view="skills">
+      <i data-lucide="cpu" class="w-4 h-4"></i>
+      <span class="text-[10px] font-medium">Skills</span>
+    </button>
+    <button onclick="navigateTo('contact')" class="mobile-nav-btn flex flex-col items-center gap-1 text-slate-400" data-view="contact">
+      <i data-lucide="send" class="w-4 h-4"></i>
+      <span class="text-[10px] font-medium">Contact</span>
+    </button>
+  </div>
+
+  <!-- Interactive Project Modal -->
+  <div id="projectModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 id="modalTitle" class="text-sm sm:text-base font-bold text-white">Project Title</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p id="modalDesc" class="text-xs text-slate-300 leading-relaxed"></p>
+      <div class="pt-3 border-t border-slate-800 flex justify-end">
+        <button onclick="closeModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 text-xs font-mono text-white hover:bg-slate-700">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function navigateTo(viewId) {
+      document.querySelectorAll('.view-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      const activePanel = document.getElementById('view-' + viewId);
+      if (activePanel) activePanel.classList.remove('hidden');
+
+      // Update Desktop Sidebar Buttons
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        if (btn.getAttribute('data-view') === viewId) {
+          btn.classList.add('text-cyan-400', 'bg-cyan-500/10', 'border', 'border-cyan-500/20');
+          btn.classList.remove('text-slate-400');
+        } else {
+          btn.classList.remove('text-cyan-400', 'bg-cyan-500/10', 'border', 'border-cyan-500/20');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      // Update Mobile Bottom Bar Buttons
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-view') === viewId) {
+          btn.classList.add('text-cyan-400');
+          btn.classList.remove('text-slate-400');
+        } else {
+          btn.classList.remove('text-cyan-400');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      // Auto close sidebar drawer on mobile
+      const sidebar = document.getElementById('sidebar');
+      if (!sidebar.classList.contains('-translate-x-full')) {
+        toggleSidebar();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
+
+    function filterProjects(cat) {
+      const cards = document.querySelectorAll('.proj-card');
+      const buttons = document.querySelectorAll('.proj-filter');
+
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-filter') === cat) {
+          btn.className = "proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shrink-0";
+        } else {
+          btn.className = "proj-filter px-3 py-1 rounded-lg text-xs font-mono bg-slate-900 text-slate-400 border border-slate-800 shrink-0";
+        }
+      });
+
+      cards.forEach(c => {
+        if (cat === 'all' || c.getAttribute('data-category') === cat) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    function showProjectDetails(title, desc) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('projectModal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('projectModal').classList.add('hidden');
+    }
+
+    function handleTerminalCommand(e) {
+      e.preventDefault();
+      const input = document.getElementById('termInput');
+      const output = document.getElementById('terminalOutput');
+      const val = input.value.trim().toLowerCase();
+      if (!val) return;
+
+      const pCmd = document.createElement('p');
+      pCmd.className = "text-cyan-400 font-bold";
+      pCmd.textContent = `➜ satendra $ ${input.value}`;
+      output.appendChild(pCmd);
+
+      const pRes = document.createElement('p');
+      pRes.className = "text-slate-300";
+
+      switch (val) {
+        case 'help':
+          pRes.innerHTML = `Commands: <span class="text-amber-400">hackathon</span>, <span class="text-cyan-300">projects</span>, <span class="text-cyan-300">skills</span>, <span class="text-cyan-300">education</span>, <span class="text-cyan-300">contact</span>, <span class="text-cyan-300">clear</span>`;
+          break;
+        case 'hackathon':
+          pRes.innerHTML = `Cypher 4.0 (Oct 9-10, 2026). Problem Statement: <span class="text-cyan-300 font-bold">The Spare Parts</span>. Organized by Rotaract Club of Atria I.T.`;
+          break;
+        case 'about':
+          pRes.textContent = `Satendra Chauhan: 4th Sem B.E. CSE Student at Atria Institute of Technology, Bengaluru (CGPA: 7.55/10). LeetCode 100+ solved.`;
+          break;
+        case 'skills':
+          pRes.textContent = `Languages: Java, C, C++, Python. Web: React, Node, Express, Spring Boot. DB: MySQL, MongoDB. IoT & Robotics.`;
+          break;
+        case 'projects':
+          pRes.textContent = `1. Smart Warehouse Inventory Allocator (AI/BFS)\n2. Smart Parking System (LoRa/WiFi)\n3. Smart Firefighting Robot\n4. Smart Digital Clock\n5. Student Record Data Security App`;
+          break;
+        case 'education':
+          pRes.textContent = `B.E. CSE @ Atria Institute of Tech (2024-2028, CGPA 7.55) | +2 Science @ Om National Academy, Nepal (GPA 2.96)`;
+          break;
+        case 'contact':
+          pRes.textContent = `Email: chauhansatendra270@gmail.com | Phone: +91 9334658481`;
+          break;
+        case 'clear':
+          output.innerHTML = '';
+          input.value = '';
+          return;
+        default:
+          pRes.innerHTML = `<span class="text-rose-400">Command not found:</span> ${val}. Type <span class="text-cyan-300">help</span> for assistance.`;
+      }
+
+      output.appendChild(pRes);
+      input.value = '';
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      document.getElementById('contactFeedback').classList.remove('hidden');
+      e.target.reset();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['DSA / C++', 'Java / OOP', 'Python & GUI', 'Web (Full-Stack)', 'IoT & Robotics', 'Databases'],
+          datasets: [{
+            label: 'Proficiency',
+            data: [82, 85, 80, 78, 86, 75],
+            backgroundColor: 'rgba(6, 182, 212, 0.25)',
+            borderColor: 'rgba(6, 182, 212, 0.9)',
+            borderWidth: 2,
+            pointBackgroundColor: '#06b6d4',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#06b6d4'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+              pointLabels: {
+                color: '#94a3b8',
+                font: { size: 9, family: 'JetBrains Mono' }
+              },
+              ticks: { display: false, maxTicksLimit: 5 }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
